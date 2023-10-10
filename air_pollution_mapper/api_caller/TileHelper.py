@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 
 class TileHelper(object):
@@ -87,3 +88,42 @@ class TileHelper(object):
             self.tile_size * (0.5 + lon / 360),
             self.tile_size * (0.5 - math.log((1 + siny) / (1 - siny)) / (4 * math.pi)),
         )
+
+    @staticmethod
+    def find_nearest_corner(location, bounds):
+        corner_lat_idx = np.argmin([
+            np.abs(bounds[0] - location["latitude"]),
+            np.abs(bounds[1] - location["latitude"])
+        ])
+
+        corner_lon_idx = np.argmin([
+            np.abs(bounds[2] - location["longitude"]),
+            np.abs(bounds[3] - location["longitude"])
+        ])
+
+        if (corner_lat_idx == 0) and (corner_lon_idx == 0):
+            # closest is latmin, lonmin
+            direction = "southwest"
+        elif (corner_lat_idx == 0) and (corner_lon_idx == 1):
+            # closest is latmax, lonmin
+            direction = "southeast"
+        elif (corner_lat_idx == 1) and (corner_lon_idx == 0):
+            # closest is latmax, lonmin
+            direction = "northwest"
+        else:
+            # closest is latmax, lonmax
+            direction = "northeast"
+
+        corner_coords = (bounds[corner_lat_idx], bounds[corner_lon_idx + 2])
+        return corner_coords, direction
+
+    @staticmethod
+    def get_adjoining_tiles(tx, ty, direction):
+        if direction == "southwest":
+            return [(tx - 1, ty), (tx - 1, ty + 1), (tx, ty + 1)]
+        elif direction == "southeast":
+            return [(tx + 1, ty), (tx + 1, ty - 1), (tx, ty - 1)]
+        elif direction == "northwest":
+            return [(tx - 1, ty - 1), (tx - 1, ty), (tx, ty - 1)]
+        else:
+            return [(tx + 1, ty - 1), (tx + 1, ty), (tx, ty - 1)]
