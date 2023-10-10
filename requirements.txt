@@ -1,0 +1,6 @@
+folium==0.14.0
+branca==0.6.0
+python-dotenv==1.0.0
+black==23.7.0
+leafmap==0.23.4
+geopandas==0.13.2
