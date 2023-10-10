@@ -9,7 +9,7 @@ class TestCurrentConditions(unittest.TestCase):
         self.secrets = load_secrets()
         self.client = Client(key=self.secrets["GOOGLE_MAPS_API_KEY"])
 
-    @unittest.skip
+    #@unittest.skip
     def test_current_conditions(self):
         location = {"longitude": -122.3, "latitude": 37.8}
 

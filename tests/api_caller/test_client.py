@@ -9,7 +9,7 @@ class TestClient(unittest.TestCase):
         self.secrets = load_secrets()
         self.client = Client(key=self.secrets["GOOGLE_MAPS_API_KEY"])
 
-    @unittest.skip
+    #@unittest.skip
     def test_get(self):
         zoom = 6
         tile_coord = (4, 3)
@@ -48,7 +48,7 @@ class TestClient(unittest.TestCase):
         # check that we have got an image returned
         self.assertEqual(request_body.headers["Content-Type"], "image/png")
 
-    @unittest.skip
+    #@unittest.skip
     def test_post_currentConditions(self):
         params = {}
         location = {"latitude": 37.3, "longitude": -122.2}
@@ -80,7 +80,7 @@ class TestClient(unittest.TestCase):
 
         self.assertEqual(len(response.json()["indexes"]), 1)
 
-    @unittest.skip
+    #@unittest.skip
     def test_post_historicalConditions(self):
         params = {}
         location = {"latitude": 37.3, "longitude": -122.2}
