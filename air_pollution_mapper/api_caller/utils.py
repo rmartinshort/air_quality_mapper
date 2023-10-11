@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+
+
 def load_secrets():
     load_dotenv()
     env_path = Path(".") / ".env"

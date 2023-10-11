@@ -91,15 +91,19 @@ class TileHelper(object):
 
     @staticmethod
     def find_nearest_corner(location, bounds):
-        corner_lat_idx = np.argmin([
-            np.abs(bounds[0] - location["latitude"]),
-            np.abs(bounds[1] - location["latitude"])
-        ])
+        corner_lat_idx = np.argmin(
+            [
+                np.abs(bounds[0] - location["latitude"]),
+                np.abs(bounds[1] - location["latitude"]),
+            ]
+        )
 
-        corner_lon_idx = np.argmin([
-            np.abs(bounds[2] - location["longitude"]),
-            np.abs(bounds[3] - location["longitude"])
-        ])
+        corner_lon_idx = np.argmin(
+            [
+                np.abs(bounds[2] - location["longitude"]),
+                np.abs(bounds[3] - location["longitude"]),
+            ]
+        )
 
         if (corner_lat_idx == 0) and (corner_lon_idx == 0):
             # closest is latmin, lonmin
