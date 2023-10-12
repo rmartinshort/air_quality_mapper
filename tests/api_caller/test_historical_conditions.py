@@ -18,7 +18,7 @@ class TestCurrentConditions(unittest.TestCase):
             self.client, location, lag_time=lag_hours
         )
 
-        self.assertEqual(len(historical_condition_resp["hoursInfo"]), 24)
+        self.assertEqual(len(historical_condition_resp["page_1"]["hoursInfo"]), 24)
         self.assertEqual(
-            len(historical_condition_resp["hoursInfo"][0]["pollutants"]), 6
+            len(historical_condition_resp["page_1"]["hoursInfo"][0]["pollutants"]), 6
         )

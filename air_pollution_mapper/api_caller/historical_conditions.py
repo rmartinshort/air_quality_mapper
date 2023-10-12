@@ -75,5 +75,7 @@ def historical_conditions(
         params["language"] = language
 
     params["extraComputations"] = extra_computations
+    params["pageSize"] = 100
+    params["pageToken"] = ""
 
     return client._request_post("/v1/history:lookup", params)

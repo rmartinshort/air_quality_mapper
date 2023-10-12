@@ -21,7 +21,23 @@ class Client(object):
             json=request_body,
         )
 
-        return self.get_body(response)
+        response_body = self.get_body(response)
+        page = 1
+        final_response = {"page_{}".format(page): response_body}
+        # fetch all the pages if needed
+        while "nextPageToken" in response_body:
+            # call again with the next page's token
+            request_body.update({"pageToken": response_body["nextPageToken"]})
+            response = self.session.post(
+                request_url,
+                headers=request_header,
+                json=request_body,
+            )
+            response_body = self.get_body(response)
+            page += 1
+            final_response["page_{}".format(page)] = response_body
+
+        return final_response
 
     def _request_get(self, url):
         request_url = self.compose_url(url)

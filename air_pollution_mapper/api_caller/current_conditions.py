@@ -51,4 +51,4 @@ def current_conditions(
 
     params["extraComputations"] = extra_computations
 
-    return client._request_post("/v1/currentConditions:lookup", params)
+    return client._request_post("/v1/currentConditions:lookup", params)["page_1"]
