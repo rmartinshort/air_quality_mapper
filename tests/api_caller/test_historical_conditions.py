@@ -11,7 +11,7 @@ class TestCurrentConditions(unittest.TestCase):
         self.secrets = load_secrets()
         self.client = Client(key=self.secrets["GOOGLE_MAPS_API_KEY"])
 
-    @unittest.skip
+    # @unittest.skip
     def test_historical_conditions_lag(self):
         location = {"longitude": -122.3, "latitude": 37.8}
         lag_hours = 24
