@@ -93,8 +93,6 @@ class TestClient(unittest.TestCase):
         request_url = self.client.compose_url(url)
         request_header = self.client.compose_header()
 
-        print(request_url, request_header)
-
         # Check url is formatted correctly
         self.assertEqual(
             request_url,

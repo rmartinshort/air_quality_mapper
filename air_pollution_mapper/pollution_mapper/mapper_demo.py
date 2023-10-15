@@ -12,7 +12,7 @@ def main():
     client = Client(key=secrets["GOOGLE_MAPS_API_KEY"])
 
     # get the lat, lon and zoom
-    zoom = 8
+    zoom = 7
     lat = 37.8
     lon = -121.8
 
@@ -22,7 +22,7 @@ def main():
     tiles = air_quality_tile(
         client,
         location,
-        pollutant="UAQI_INDIGO_PERSIAN",
+        pollutant="US_AQI",
         zoom=zoom,
         get_adjoining_tiles=True,
     )
@@ -38,4 +38,4 @@ def main():
         ).add_to(map)
 
     # save to test location
-    map.to_html(os.path.join(MAPS_DUMP_DIR, "test_route_map.html"))
+    map.to_html(os.path.join(MAPS_DUMP_DIR, "test_air_quality.html"))
