@@ -1,14 +1,23 @@
 from langchain.prompts import ChatPromptTemplate
+from typing import List
 from pydantic import BaseModel, Field
 from langchain.utils.openai_functions import convert_pydantic_to_openai_function
 from langchain.output_parsers.openai_functions import JsonOutputFunctionsParser
 
 
+class QuestionType(BaseModel):
+    """The tag given to a question"""
+
+    name: str = Field(
+        description="The classification of the query. Must be one of 'invalid', 'healthcare', 'region' or 'broad'"
+    )
+
+
 class QueryTagging(BaseModel):
     """Tag this query"""
 
-    question_type: str = Field(
-        description="The classification of the query. Must be one of 'invalid', 'helpcenter', 'single' or 'group'"
+    question_type: List[QuestionType] = Field(
+        description="The multi-label classification of the query"
     )
     language: str = Field(
         description="language of the query (should be ISO 639-1 code)"
@@ -20,7 +29,7 @@ class TaggingChain(object):
         self.llm = llm
 
     @staticmethod
-    def set_up_prompt(self):
+    def set_up_prompt():
         tagging_system_prompt = """
           You are an assistant who is an expert in air pollution, air quality and its associated health 
           effects. You have access to an API that can provide air quality information given a location and timeframe.
@@ -38,7 +47,7 @@ class TaggingChain(object):
           Here are some examples:
 
           "My grandma has asthma, can she safely go outside in Seattle right now?" Should be tagged as "healthcare" and "region"
-          "What are the carbon monoxide levels in downtown Los Angeles over the last 24 hours?" Should be tagged as "regipn"
+          "What are the carbon monoxide levels in downtown Los Angeles over the last 24 hours?" Should be tagged as "region"
           "What are the cities with the cleanest air?" Should be tagged as "broad"
           "Whats the price of milk in Tokyo?" Should be tagged as "invalid"
 
@@ -50,7 +59,6 @@ class TaggingChain(object):
 
         return tagging_prompt
 
-    @staticmethod
     def set_up_model(self):
         tagging_functions = [convert_pydantic_to_openai_function(QueryTagging)]
 
