@@ -2,10 +2,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from air_pollution_mapper.llm.AirQualityAgent import AirQualityAgent
 
+
 class PollutionMapper(object):
-
     def __init__(self, openai_api_key, google_maps_api_key):
-
         self.parser = AirQualityAgent(
             openai_api_key=openai_api_key,
             google_maps_api_key=google_maps_api_key,
@@ -15,7 +14,6 @@ class PollutionMapper(object):
         self.current_display_map = None
 
     def pollutant_ts_seaborn(self, pollutant_code):
-
         # from global scope
         master_df = self.current_df
 
@@ -38,13 +36,7 @@ class PollutionMapper(object):
         pollutant_name = df["name"].iloc[0]
         pollutant_unit = str(df["unit"].iloc[0]).lower().replace("_", " ")
 
-        sns.lineplot(
-            x="time",
-            y="value",
-            data=df,
-            ax=ax,
-            hue="region"
-        )
+        sns.lineplot(x="time", y="value", data=df, ax=ax, hue="region")
 
         ax.set_title("{} : ({})".format(pollutant_name, pollutant_code))
         ax.set_xlabel("Time")
@@ -53,7 +45,6 @@ class PollutionMapper(object):
         return fig
 
     def parse_for_UI(self, query, zoom_level):
-
         """
         Parse a query and return what is needed for the gradio UI
         :param query:
@@ -85,23 +76,20 @@ class PollutionMapper(object):
         return output_response, health_suggestion, displaymap, plot_fig
 
     def get_map(self):
-
         return self.current_display_map
 
     def get_response(self):
-
         return self.current_response
 
     def get_health_suggestion(self):
-
         return self.current_health_suggestion
 
     def get_conditions_df(self):
-
         return self.current_df
 
     def parse(self, query, zoom_level=7):
-
-        response, df, health_suggestion, displaymap = self.parser.parse(query, zoom_level)
+        response, df, health_suggestion, displaymap = self.parser.parse(
+            query, zoom_level
+        )
 
         return response, df, health_suggestion, displaymap
