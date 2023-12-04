@@ -44,6 +44,15 @@ class ExtractionChain(object):
         system_prompt = """
         You are an assistant who extracts relevant entities from questions and passages about air quality and pollution.
         Extract the relevant information. Extract partial information if needed.
+        
+        For the pollutants entity, you must choose from the following list:
+        - Overall air quality index
+        - Sulfur dioxide
+        - Fine particulate matter (<2.5µm)
+        - Inhalable particulate matter (<10µm)
+        - Ozone
+        - Nitrogen dioxide
+        - Carbon monoxide
         """
 
         extraction_prompt = ChatPromptTemplate.from_messages(

@@ -171,16 +171,14 @@ class AirQualityAgent(object):
 
         return historical_pollutant_conditions, health_suggestion_response
 
-    def parse(self, query):
+    def parse(self, query, zoom_level=7):
         logging.info("LLM parse {}".format(query))
         llm_result = self.query_parser.parse(query)
         logging.info("LLM result: {}".format(llm_result))
 
         regions = llm_result["regions"]
         nhours = llm_result["nhours_lag"]
-        pollutant_codes = llm_result["pollutant_codes"]
         health_suggestion = llm_result["health_suggestion"]
-        zoom = 7
 
         if regions:
             logging.info("API call to google air quality for historical conditions")
@@ -190,7 +188,7 @@ class AirQualityAgent(object):
                 health_suggestion_response,
             ) = self.generate_pollutant_timeseries(regions, nhours, health_suggestion)
             logging.info("API call to google air quality for heatmaps")
-            heatmap = self.generate_heatmap(regions, zoom)
+            heatmap = self.generate_heatmap(regions, int(zoom_level))
 
             return llm_result, conditions_df, health_suggestion_response, heatmap
 

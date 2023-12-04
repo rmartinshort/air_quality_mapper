@@ -3,6 +3,16 @@ from datetime import datetime
 
 
 class ExtractionEnricher(object):
+    POLLUTANT_MAPPER = {
+        "overall air quality index": "index",
+        "sulfur dioxide": "so2",
+        "fine particulate matter (<2.5µm)": "pm25",
+        "inhalable particulate matter (<10µm)": "pm10",
+        "ozone": "o3",
+        "nitrogen dioxide": "no2",
+        "carbon monoxide": "co",
+    }
+
     def __init__(self, google_maps_api_key):
         self.gmaps_client = googlemaps.Client(key=google_maps_api_key)
 
@@ -37,6 +47,16 @@ class ExtractionEnricher(object):
         else:
             return {"latitude": 0, "longitude": 0}
 
+    def encode_pollutants(self, pollutants_list):
+        parsed_list = []
+        for element in pollutants_list:
+            try:
+                parsed_list.append(self.POLLUTANT_MAPPER[element["name"].lower()])
+            except:
+                continue
+
+        return parsed_list
+
     def parse(self, result):
         locations = result["regions"]
         pollutants = result["pollutants"]
@@ -66,9 +86,9 @@ class ExtractionEnricher(object):
             number_of_hours_lag = 24
 
         # get the pollutant codes
-        pollutant_codes = []
         if pollutants:
-            for pollutant in pollutants:
-                pollutant_codes.append(pollutant)
+            pollutant_codes = self.encode_pollutants(pollutants)
+        else:
+            pollutant_codes = []
 
         return pollutant_codes, number_of_hours_lag, region_coords
