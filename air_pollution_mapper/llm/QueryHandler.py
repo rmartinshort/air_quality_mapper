@@ -3,9 +3,9 @@ from air_pollution_mapper.llm.extractor.ExtractionChain import ExtractionChain
 from air_pollution_mapper.llm.extractor.ExtractionEnricher import ExtractionEnricher
 from air_pollution_mapper.llm.responder.ResponderChain import (
     ResponderChain,
-    ResponderChainWithContext,
     ResponderChainWithAPI,
 )
+from air_pollution_mapper.llm.responder.TimeseriesResponder import TimeseriesResponder
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from datetime import datetime
@@ -18,21 +18,22 @@ class QueryHandler(object):
     def __init__(
         self, openai_api_key, google_maps_api_key, model="gpt-3.5-turbo", temperature=0
     ):
-        self.extractor_model = ChatOpenAI(
+        self.model = ChatOpenAI(
             temperature=temperature, model_name=model, openai_api_key=openai_api_key
         )
-        self.responder_model = ChatOpenAI(
-            model_name=model,
-            temperature=temperature,
-            openai_api_key=openai_api_key,
-            streaming=True,
-            callbacks=[StreamingStdOutCallbackHandler()],
-        )
-        self.tagger = TaggingChain(self.extractor_model).generate()
-        self.extractor = ExtractionChain(self.extractor_model).generate()
+        # self.responder_model = ChatOpenAI(
+        #     model_name=model,
+        #     temperature=temperature,
+        #     openai_api_key=openai_api_key,
+        #     streaming=True,
+        #     callbacks=[StreamingStdOutCallbackHandler()],
+        # )
+        self.tagger = TaggingChain(self.model).generate()
+        self.extractor = ExtractionChain(self.model).generate()
         self.enricher = ExtractionEnricher(google_maps_api_key=google_maps_api_key)
-        self.responder = ResponderChain(self.responder_model).generate()
-        self.api_responder = ResponderChainWithAPI(self.responder_model).generate()
+        self.responder = ResponderChain(self.model).generate()
+        self.api_responder = ResponderChainWithAPI(self.model).generate()
+        self.timeseries_responder = TimeseriesResponder(self.model)
 
     def question_type_handler(self, question_type):
         extract = False

@@ -62,16 +62,34 @@ class ResponderChainWithAPI(object):
         return self.set_up_chain()
 
 
-class ResponderChainWithContext(ResponderChain):
+class ResponderTimeseriesChain(ResponderChain):
     @staticmethod
     def set_up_prompt():
         response_system_prompt = """
-        You are an assistant who is an expert in air pollution, air quality and its associated health 
-        effects. Use the following pieces of retrieved context to answer the question.
-        If you don't know the answer, just say that you don't know.
-        Use three sentences maximum and keep the answer concise.
-        
-        {context}
+        You are a helpful assistant who helps interpret timeseries. 
+
+        You will be given a timeseries encoded as a string. 
+        Think carefully about the question and the timseries then answer concisely using a maximum of 4 sentences. 
+        Do not make up answers, use only the information in the timeseries.
+
+        {region_map}
+
+        Use the actual region names in your answer rather than the letters in the timeseries string.
+
+        To help you decode the timeseries, use the following information:
+
+        You are given {timeframe} data for {metric} in {nregions} regions. It is encoded as a string 
+        where each time point is separated by a comma and each region is represented by a letter
+
+        For example, the string
+
+        "2023-12-12 01:A45:B24,2023-12-12 02:A54:B30"
+
+        should be interpreted as 
+        at 1am on 2023-12-12, regions A's value is 45 and region B's value is 24
+        at 2am on 2023-12-12, regions A's value is 54 and region B's value is 30
+
+        Timeseries: {timeseries}
         """
 
         prompt = ChatPromptTemplate.from_messages(
